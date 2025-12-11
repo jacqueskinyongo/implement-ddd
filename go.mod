@@ -1,4 +1,4 @@
-module github.com/jkinyongo/ddd-go
+module github.com/jkinyongo/tavern
 
 go 1.25.1
 

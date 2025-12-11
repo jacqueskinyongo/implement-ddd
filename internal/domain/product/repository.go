@@ -4,18 +4,17 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/jkinyongo/ddd-go/internal/aggregate"
 )
 
 var (
-	ErrProductNotFound = errors.New("no such product")
+	ErrProductNotFound      = errors.New("no such product")
 	ErrProductAlreadyExists = errors.New("there is already such a product")
 )
 
-type ProductRepository interface {
-	GetAll() ([]aggregate.Product, error)
-	GetByID(id uuid.UUID) (aggregate.Product, error)
-	Add(product aggregate.Product) error
-	Update(product aggregate.Product) error
+type Repository interface {
+	GetAll() ([]Product, error)
+	GetByID(id uuid.UUID) (Product, error)
+	Add(product Product) error
+	Update(product Product) error
 	Delete(id uuid.UUID) error
 }

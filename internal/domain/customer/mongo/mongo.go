@@ -5,33 +5,33 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jkinyongo/ddd-go/internal/aggregate"
+	"github.com/jkinyongo/tavern/internal/domain/customer"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MongoRepository struct {
-	db *mongo.Database
+	db       *mongo.Database
 	customer *mongo.Collection
 }
 
 // mongoCustomer is an internal type that is used to store a CustomerAggregate
 // inside this repo
 type mongoCustomer struct {
-	ID uuid.UUID `bson:"id"`
-	Name string `bson:"name"`
+	ID   uuid.UUID `bson:"id"`
+	Name string    `bson:"name"`
 }
 
-func NewFromCustomer(c aggregate.Customer) mongoCustomer {
+func NewFromCustomer(c customer.Customer) mongoCustomer {
 	return mongoCustomer{
-		ID: c.GetID(),
+		ID:   c.GetID(),
 		Name: c.GetName(),
 	}
 }
 
-func (m mongoCustomer) ToAggregate() aggregate.Customer {
-	c := aggregate.Customer{}
+func (m mongoCustomer) ToAggregate() customer.Customer {
+	c := customer.Customer{}
 	c.SetID(m.ID)
 	c.SetName(m.Name)
 	return c
@@ -45,24 +45,24 @@ func New(ctx context.Context, connectionString string) (*MongoRepository, error)
 	db := client.Database("ddd")
 	customers := db.Collection("customers")
 	return &MongoRepository{
-		db: db,
+		db:       db,
 		customer: customers,
 	}, nil
 }
 
-func (mr *MongoRepository) Get(id uuid.UUID) (aggregate.Customer, error) {
+func (mr *MongoRepository) Get(id uuid.UUID) (customer.Customer, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	result := mr.customer.FindOne(ctx, bson.M{"id": id})
 
 	var c mongoCustomer
 	if err := result.Decode(&c); err != nil {
-		return aggregate.Customer{}, err
+		return customer.Customer{}, err
 	}
 	return c.ToAggregate(), nil
 }
 
-func (mr *MongoRepository) Add(c aggregate.Customer) error {
+func (mr *MongoRepository) Add(c customer.Customer) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -74,8 +74,6 @@ func (mr *MongoRepository) Add(c aggregate.Customer) error {
 	return nil
 }
 
-func (mr *MongoRepository) Update(c aggregate.Customer) error {
+func (mr *MongoRepository) Update(c customer.Customer) error {
 	panic("to iplement")
 }
-
-

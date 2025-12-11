@@ -1,12 +1,11 @@
-// Package aggregate holds our aggregate that combines many entities in to a full object
-package aggregate
+// Package customer holds our aggregate that combines many entities in to a full object
+package customer
 
 import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/jkinyongo/ddd-go/internal/entity"
-	"github.com/jkinyongo/ddd-go/internal/valueobject"
+	tavern "github.com/jkinyongo/tavern/internal"
 )
 
 var (
@@ -16,9 +15,9 @@ var (
 type Customer struct {
 	// person is the root entityof the customer
 	// which means person.ID is the main identifier for the customer.
-	person *entity.Person
-	products []*entity.Item
-	transactions []valueobject.Transaction 
+	person       *tavern.Person
+	products     []*tavern.Item
+	transactions []tavern.Transaction
 }
 
 // NewCustomer is a factory to create a new customer aggregate
@@ -27,16 +26,16 @@ func NewCustomer(name string) (Customer, error) {
 	if name == "" {
 		return Customer{}, ErrInvalidPerson
 	}
-	
-	person := &entity.Person{
+
+	person := &tavern.Person{
 		Name: name,
-		ID: uuid.New(),
+		ID:   uuid.New(),
 	}
 
 	return Customer{
-		person: person,
-		products: make([]*entity.Item, 0),
-		transactions: make([]valueobject.Transaction, 0),
+		person:       person,
+		products:     make([]*tavern.Item, 0),
+		transactions: make([]tavern.Transaction, 0),
 	}, nil
 }
 
@@ -46,19 +45,18 @@ func (c *Customer) GetID() uuid.UUID {
 
 func (c *Customer) SetID(id uuid.UUID) {
 	if c.person == nil {
-		c.person = &entity.Person{}
+		c.person = &tavern.Person{}
 	}
 	c.person.ID = id
 }
 
 func (c *Customer) SetName(name string) {
 	if c.person == nil {
-		c.person = &entity.Person{}
+		c.person = &tavern.Person{}
 	}
 	c.person.Name = name
 }
 
 func (c *Customer) GetName() string {
-	return  c.person.Name
+	return c.person.Name
 }
-

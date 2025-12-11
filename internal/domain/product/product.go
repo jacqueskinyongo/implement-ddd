@@ -1,10 +1,10 @@
-package aggregate
+package product
 
 import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/jkinyongo/ddd-go/internal/entity"
+	tavern "github.com/jkinyongo/tavern/internal"
 )
 
 var (
@@ -12,8 +12,8 @@ var (
 )
 
 type Product struct {
-	item *entity.Item
-	price float64
+	item     *tavern.Item
+	price    float64
 	quantity int
 }
 
@@ -22,12 +22,12 @@ func NewProduct(name, description string, price float64) (Product, error) {
 		return Product{}, ErrMissingValues
 	}
 	return Product{
-		item: &entity.Item{
-			ID: uuid.New(),
-			Name: name,
+		item: &tavern.Item{
+			ID:          uuid.New(),
+			Name:        name,
 			Description: description,
 		},
-		price: price,
+		price:    price,
 		quantity: 0,
 	}, nil
 }
@@ -36,15 +36,10 @@ func (p *Product) GetID() uuid.UUID {
 	return p.item.ID
 }
 
-func (p *Product) GetItem() *entity.Item {
+func (p *Product) GetItem() *tavern.Item {
 	return p.item
 }
 
 func (p *Product) GetPrice() float64 {
 	return p.price
 }
-
-
-
-
-
